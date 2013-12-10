@@ -1,0 +1,50 @@
+<project name="Polystyrene" default="compile" basedir=".">
+
+	<!-- importing environment variables -->
+  <property environment="env"/>
+
+	<!-- set global properties for this build -->
+	<property name="src" location="src" />
+	<property name="build" location="classes" />
+
+  <!-- Define scala compiler, scaladoc, etc command -->
+
+  <taskdef resource="scala/tools/ant/antlib.xml">
+    <classpath>
+      <pathelement location="${env.SCALA_LIB}/scala-compiler.jar" />
+      <pathelement location="${env.SCALA_LIB}/scala-library.jar" />
+      <pathelement location="${env.SCALA_LIB}/scala-reflect.jar"   />
+    </classpath>
+  </taskdef>
+
+	<!-- Packages to be included in the Javadoc generation -->
+	<property name="packages" value="peersim.*,example.*"/>
+		
+	<!-- Path for compilation -->
+	<path id="compile.path">
+    <fileset dir="${env.SCALA_LIB}/"> <include name="*.jar" /> </fileset>
+    <pathelement location="${build}" />
+		<pathelement location="libs/jep-2.3.0.jar" />
+		<pathelement location="libs/djep-1.0.0.jar" />
+	</path>
+
+	<target name="compile" depends="compile-peersim">
+		<!-- Create the build directory structure used by compile -->
+		<mkdir dir="${build}" />
+		<!-- Compile the java code from ${src} into ${build} -->
+		<scalac srcdir="${src}" destdir="${build}" classpathref="compile.path" />
+	</target>
+ 
+	<target name="compile-peersim">
+		<!-- Create the build directory structure used by compile -->
+		<mkdir dir="${build}" />
+		<!-- Compile the java code from ${src} into ${build} -->
+		<javac srcdir="${src}" destdir="${build}" classpathref="compile.path" includeantruntime="false" />
+	</target>
+			
+	<target name="clean" description="clean up">
+		<!-- Delete the ${build} directory tree -->
+		<delete dir="${build}" />
+	</target>
+
+</project>

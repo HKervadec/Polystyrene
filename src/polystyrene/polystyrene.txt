@@ -1,0 +1,98 @@
+# POLYSTYRENE CONFIG FILE
+random.seed 1234567890
+simulation.cycles 200
+simulation.experiments 1
+
+WIDTH 80
+HEIGHT 40
+VIEW 10
+SIZE WIDTH*HEIGHT
+
+network.size SIZE*1.5
+#network.size SIZE*1
+
+protocol.link IdleProtocol
+
+protocol.coord polystyrene.torus.Torus
+protocol.coord.width WIDTH
+protocol.coord.height HEIGHT
+protocol.coord.m 20
+protocol.coord.psi 5
+protocol.coord.K 4
+protocol.coord.smart false
+protocol.coord.lim 50
+
+protocol.poly polystyrene.torus.TorusPolystyrene
+protocol.poly.m 40
+protocol.poly.backup_size 4
+protocol.poly.width WIDTH
+protocol.poly.height HEIGHT
+protocol.poly.smart false
+
+
+init.0 polystyrene.torus.TorusInitializer
+init.0.protocol coord
+init.0.width WIDTH
+init.0.height HEIGHT
+init.0.view VIEW
+init.0.size SIZE
+
+init.1 polystyrene.torus.TorusPolyInitializer
+init.1.protocol poly
+init.1.width WIDTH
+init.1.height HEIGHT
+
+
+control.io polystyrene.core.Observer
+control.io.protocol link
+control.io.coord_protocol coord
+control.io.gnuplot_base graph
+control.io.gnuplot true
+control.io.guests false
+control.io.guests_base guests
+
+control.metrics polystyrene.core.Metrics
+control.metrics.protocol link
+control.metrics.coord_protocol coord
+control.metrics.size SIZE
+control.metrics.viewsize true
+control.metrics.msg true
+control.metrics.quality true
+
+control.metrics2 polystyrene.core.MetricsPoly
+control.metrics2.protocol link
+control.metrics2.coord_protocol poly
+control.metrics2.size SIZE
+control.metrics2.datapoint true
+control.metrics2.memory true
+control.metrics2.guest true
+control.metrics2.deviation true
+
+control.failure polystyrene.torus.TorusCatastrophe
+control.failure.protocol link
+control.failure.coord_protocol coord
+control.failure.turn 20
+control.failure.size SIZE
+
+control.sanity polystyrene.torus.TorusSanity
+control.sanity.protocol link
+control.sanity.coord_protocol coord
+
+control.reinjection polystyrene.core.Reinjection
+control.reinjection.protocol link
+control.reinjection.coord_protocol coord
+control.reinjection.view VIEW
+control.reinjection.size SIZE
+control.reinjection.turn 100
+
+control.stop polystyrene.core.Stop
+control.stop.protocol link
+control.stop.view VIEW
+control.stop.size SIZE
+#control.stop.redun 0
+control.stop.redun (WIDTH*HEIGHT)/100
+control.stop.opti true
+
+# Always keep this order
+#include.control metrics metrics2 stop failure reinjection io
+include.control metrics metrics2 failure reinjection io
